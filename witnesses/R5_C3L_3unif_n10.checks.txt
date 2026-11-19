@@ -1,0 +1,22 @@
+# R_5(C3;3) >= 11: 5-colouring of the triples of [10], no monochromatic loose triangle (18 Nov 2026 00:5x +04)
+# sha256 5a5c7e6131fb37e55acf9ccc209c2afa1103d3c3ba2ba5a9f3c020486fb7b62f
+## checks/hypenc check
+colour 0: no C3L
+colour 1: no C3L
+colour 2: no C3L
+colour 3: no C3L
+colour 4: no C3L
+PASS n=10
+## checks/hcheck_char.py
+colour 0 (24 triples): no C3L
+colour 1 (24 triples): no C3L
+colour 2 (24 triples): no C3L
+colour 3 (24 triples): no C3L
+colour 4 (24 triples): no C3L
+PASS n=10
+## red controls (planted loose triangle per colour, seed 11): both checkers
+c0: FAIL / FAIL
+c1: FAIL / FAIL
+c2: FAIL / FAIL
+c3: FAIL / FAIL
+c4: FAIL / FAIL

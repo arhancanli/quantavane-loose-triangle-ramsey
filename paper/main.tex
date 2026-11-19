@@ -1,0 +1,292 @@
+\documentclass[11pt]{amsart}
+\usepackage[margin=1.05in]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amssymb}
+\usepackage{booktabs}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\setlength{\emergencystretch}{2em}
+\setlist{leftmargin=2em}
+\raggedbottom
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{question}[theorem]{Question}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\C}{\mathcal{C}}
+
+\begin{document}
+
+\title{Multicolour Ramsey numbers of the $3$-uniform loose triangle}
+
+\author{Arhan Canli}
+\address{Quantavane, Dubai, United Arab Emirates}
+\email{arhan@quantavane.com}
+
+\subjclass[2020]{Primary 05D10; Secondary 05C65, 05C55, 68V15}
+\keywords{hypergraph Ramsey numbers, loose cycles, multicolour Ramsey numbers, SAT, DRAT proofs}
+
+\begin{abstract}
+Let $R_r(\C)$ be the least $n$ such that every $r$-colouring of the triples of an $n$-set contains a monochromatic
+loose triangle $\C$: three triples that pairwise meet in exactly one vertex and span six vertices.
+Gy\'arf\'as and Raeisi proved $r+5\le R_r(\C)\le 3r$ for $r\ge3$ and $R_2(\C)=7$, $R_3(\C)=8$, and suspected that
+the lower bound $r+5$ is the truth for every $r$; Mubayi and Suk also wrote that the lower bound appears more likely
+to be the answer. We show that the suspicion holds for four colours, $R_4(\C)=9$ (a computer proof certified in the
+DRAT format), and fails for every $r\ge5$, by an unbounded amount: $R_5(\C)=11$ (an explicit colouring and a
+certified cube-and-conquer proof), $R_{12}(\C)\ge19$, and
+$R_r(\C)\ge r+6+\lfloor\log_2(r/9)\rfloor$ for every $r\ge9$. The constructions rest on a short lemma about unions of
+sunflowers.
+\end{abstract}
+
+\maketitle
+
+\section{Introduction}
+
+A \emph{loose triangle} $\C$ (the $3$-uniform loose cycle of length three, $C^3_3$ in \cite{GR}) is the $3$-graph
+with vertices $v_1,\dots,v_6$ and edges $\{v_1,v_2,v_3\}$, $\{v_3,v_4,v_5\}$, $\{v_5,v_6,v_1\}$. Equivalently, three
+triples form a copy of $\C$ exactly when they pairwise meet in exactly one vertex and no vertex lies in all three.
+For $r\ge1$ let $R_r(\C)$ be the least $n$ such that every colouring of the triples of an $n$-set with $r$ colours has
+a monochromatic copy of $\C$, and let $f(r)=R_r(\C)-1$, the largest $n$ admitting a \emph{good} colouring (one with no
+such copy). A good colouring stays good on every subset of the points.
+
+Gy\'arf\'as and Raeisi \cite[Proposition 13]{GR} proved $r+5\le R_r(\C)\le 3r+1$, the lower bound by colouring
+each triple of $\{1,\dots,r+4\}$ by its least element if this is less than $r$ and by $r$ otherwise, and the upper
+bound from the Tur\'an number of $\C$ \cite{CK, FF}. Using the uniqueness of the extremal family \cite{CK} they
+reduced the upper bound to $3r$ for $r\ge3$; they also proved $R_2(\C)=7$ and $R_3(\C)=8$, and wrote \cite[p.~8]{GR}:
+``We proved here that for $r=2,3$ the lower bound is the truth and we suspect that this is true for all $r$.''
+Axenovich, Gy\'arf\'as, Liu and Mubayi \cite[Proposition 3]{AGLM} restate the bounds, and Mubayi and Suk
+\cite[Section 9]{MS} write that it ``seems to be an interesting open problem to determine which bound above is closer
+to the truth. The lower bound appears more likely to be the answer.'' Radziszowski's survey \cite[item 7.2.2(a)]{DS1}
+lists $r+5\le R_r(\C)\le 3r$ for $r\ge4$.
+
+For the loose path $\mathcal P$ with three edges the analogous lower bound $r+6$ is the truth for $2\le r\le 10$ (see
+\cite[item 7.2.2(b)]{DS1}), and the upper bound has been brought far below the Tur\'an bound \cite{LP, BZ}. For the
+loose triangle we find the opposite picture:
+
+\begin{theorem}\label{thm:main}
+\begin{enumerate}[label=\textup{(\roman*)}]
+\item $R_4(\C)=9$.
+\item $R_5(\C)=11$ and $R_{12}(\C)\ge19$.
+\item For every $v\ge7$, $R_r(\C)\ge r+v$ whenever $r\ge 9\cdot2^{v-6}-v+1$. In particular
+$R_r(\C)\ge r+6+\lfloor\log_2(r/9)\rfloor$ for every $r\ge9$, and $R_r(\C)-r\to\infty$.
+\end{enumerate}
+\end{theorem}
+
+Part (i) confirms the suspicion of \cite{GR} for $r=4$ and is a computation (Section~\ref{sec:r4}). Parts (ii) and
+(iii) refute it for every $r\ge5$; the lower bounds follow from two constructions (Theorems~\ref{thm:odd}
+and~\ref{thm:two}), both based on Lemma~\ref{lem:sun}, and the upper bound $R_5(\C)\le11$ is a computation
+(Section~\ref{sec:r5}). Thus $R_r(\C)=r+5$ for $r\le4$ and $R_5(\C)=r+6$. Table~\ref{tab:bounds} lists the resulting lower bounds.
+
+\section{Constructions}\label{sec:constr}
+
+\begin{lemma}\label{lem:star}
+$f(r+1)\ge f(r)+1$ for every $r\ge1$.
+\end{lemma}
+
+\begin{proof}
+Add a new point $v$ to a good $r$-colouring of the triples of an $f(r)$-set and give every triple through $v$ a new
+colour. Three triples through $v$ share $v$, so the new class has no copy of $\C$.
+\end{proof}
+
+A \emph{sunflower} with kernel $e$ (a pair) and petal set $X$ is the set of triples $e\cup\{x\}$, $x\in X$.
+
+\begin{lemma}\label{lem:sun}
+Let the point set be partitioned as $P\cup Q$. Let $E_P$ be a set of pairwise disjoint pairs inside $P$ and $E_Q$ a set
+of pairwise disjoint pairs inside $Q$, and write $K_P=\bigcup E_P$, $K_Q=\bigcup E_Q$. For each $e\in E_P$ let
+$X_e\subseteq (P\cup Q)\setminus K_P$, and for each $e\in E_Q$ let $X_e\subseteq (P\cup Q)\setminus K_Q$. Then
+$F=\{e\cup\{x\}: e\in E_P\cup E_Q,\ x\in X_e\}$ contains no copy of $\C$.
+\end{lemma}
+
+\begin{proof}
+Suppose $t_i=e_i\cup\{x_i\}$ $(i=1,2,3)$ form a copy of $\C$. The kernels are distinct, since two triples with the same
+kernel share two points. Two kernels lie on the same side; as the hypotheses are symmetric in $P$ and $Q$ we may
+assume $e_1,e_2\in E_P$. They are disjoint, and $x_1\notin e_2$, $x_2\notin e_1$ because the petals avoid $K_P$. Hence
+$t_1\cap t_2=\{x_1\}\cap\{x_2\}$, and as $|t_1\cap t_2|=1$ we get $x_1=x_2=:x$. If $e_3\in E_P$ as well, the same
+argument gives $x_3=x$, a point common to all three triples. So $e_3\in E_Q$. If $x\in e_3$ or $x_3=x$, again $x$ lies
+in all three triples. Otherwise, since $e_1\subseteq P$ and $e_3\subseteq Q$ are disjoint and $x_3\ne x$,
+$t_1\cap t_3=(\{x_3\}\cap e_1)\cup(\{x\}\cap e_3)=\{x_3\}\cap e_1$. As $|t_1\cap t_3|=1$, $x_3\in e_1$, and in the
+same way $x_3\in e_2$, which is impossible because $e_1\cap e_2=\emptyset$.
+\end{proof}
+
+For odd $m$, call a $3$-subset of $\Z_m$ a \emph{progression} if it is $\{c-d,c,c+d\}$ for some $c$ and $d\ne0$ (we say
+$c$ is a middle term), and let $U_m$ be the set of $3$-subsets of $\Z_m$ that are not progressions.
+
+\begin{theorem}\label{thm:odd}
+Let $m\ge3$ be odd. If the triples in $U_m$ can be coloured with $j$ colours without a monochromatic copy of $\C$, then
+$f(m+j)\ge 2m$.
+\end{theorem}
+
+\begin{proof}
+Take the points $\Z_m\times\{0,1\}$. A triple with two points $(a,s),(b,s)$ in one part and one point in the other
+part gets colour $(a+b)/2\in\Z_m$. A progression inside one part gets one of its middle terms (it has one or, when
+$3\mid m$, possibly three), and the triples of $U_m$ inside each part get the given $j$-colouring, with $j$ new colours,
+the same on both parts. In part $s$ the pairs $\{c-d,c+d\}$, $1\le d\le (m-1)/2$, are disjoint and cover
+$\Z_m\setminus\{c\}$, and $\{a,b\}$ is one of them iff $(a+b)/2=c$. So class $c\in\Z_m$ consists of triples $e\cup\{x\}$
+with $e$ one of these pairs in a part and $x$ either in the other part or equal to $(c,s)$ in the same part, which is
+a family as in Lemma~\ref{lem:sun} with $K_P=(\Z_m\setminus\{c\})\times\{0\}$ and $K_Q=(\Z_m\setminus\{c\})\times\{1\}$.
+A class among the $j$ new colours consists of triples inside $P$ and inside $Q$; the three triples of a copy of $\C$
+pairwise intersect, so such a copy would lie inside one part, against the hypothesis.
+\end{proof}
+
+Every $3$-subset of $\Z_5$ is a progression with a unique middle term (the ten sets $\{c-d,c,c+d\}$, $c\in\Z_5$,
+$d\in\{1,2\}$, are distinct), so $U_5=\emptyset$ and Theorem~\ref{thm:odd} gives $f(5)\ge10$: colour a cross triple by
+$(a+b)/2$ and a triple $\{a,b,c\}$ inside a part by its middle term, which is $2(a+b+c)$ in $\Z_5$. Each of the five
+classes has $24$ triples. For $m=9$ the set $U_9$ has $54$ triples, and a computer search found the following good
+$3$-colouring (triples of $\Z_9$ written as digit strings):
+\begin{center}\small
+\begin{tabular}{ll}
+colour 1: & 016 017 026 046 056 067 068 127 137 157 167 178 235 238 245 248 358 458\\
+colour 2: & 013 023 034 035 037 038 047 125 128 158 247 256 268 347 457 467 478 568\\
+colour 3: & 014 025 028 058 124 134 136 145 146 148 236 257 278 346 356 367 368 578
+\end{tabular}
+\end{center}
+That the three classes contain no copy of $\C$ is checked directly. Theorem~\ref{thm:odd} gives $f(12)\ge18$, that is
+$R_{12}(\C)\ge19$, which proves Theorem~\ref{thm:main}(ii).
+
+\begin{theorem}\label{thm:two}
+If $m$ is even and $m\le f(j)$, then $f(m-1+j)\ge2m$.
+\end{theorem}
+
+\begin{proof}
+Take two disjoint $m$-sets $P,Q$ and a $1$-factorization $M_1,\dots,M_{m-1}$ of the complete graph on each of them.
+A triple with two points $\{a,b\}$ in one part and one point in the other part gets colour $i$, where $\{a,b\}\in M_i$.
+Inside $P$, colour the triples by a good $j$-colouring of an $m$-set with $j$ new colours (it exists as $m\le f(j)$),
+and colour the triples inside $Q$ by a copy of the same colouring. Every triple lies inside one part or has exactly two
+points in one part, so it gets exactly one colour. In a new colour, a copy of $\C$ would lie inside one part, where the
+colouring is good. Cross colour $i$ is the family of Lemma~\ref{lem:sun} with $E_P=M_i$ on $P$, $E_Q=M_i$ on $Q$, and
+petal sets $X_e=Q$ for $e\subseteq P$ and $X_e=P$ for $e\subseteq Q$.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\textup{\ref{thm:main}(iii)}]
+For $v\ge7$ put $r_v=9\cdot2^{v-6}-v+1$; then $r_7=12$ and $r_{v+1}=2r_v+v-2$. We show $f(r_v)\ge r_v+v-1$ by induction
+on $v$. For $v=7$ this is $f(12)\ge18$. Given it for $v$, put $j=r_v$ and $m=r_v+v-1=9\cdot2^{v-6}$, which is even and at
+most $f(j)$; Theorem~\ref{thm:two} gives $f(m-1+j)\ge2m$, where $m-1+j=r_{v+1}$ and $2m=r_{v+1}+v$. By
+Lemma~\ref{lem:star}, $f(r)-r$ does not decrease, so $R_r(\C)-r=f(r)+1-r\ge v$ for all $r\ge r_v$. For $r\ge18$ let
+$v=6+\lfloor\log_2(r/9)\rfloor\ge7$; then $r_v\le9\cdot2^{v-6}\le r$. For $9\le r\le17$ the bound $r+6$ follows from
+$f(5)\ge10$ and Lemma~\ref{lem:star}.
+\end{proof}
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{lccccccccc}
+\toprule
+$r$ & 1--4 & 5--11 & 12--28 & 29--63 & 64--134 & 135--277 & 278--564 & 565--1139 & 1140--2290\\
+\midrule
+$R_r(\C)-r\ \ge$ & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 & 13\\
+\bottomrule
+\end{tabular}
+\caption{Lower bounds for $R_r(\C)-r$ from Lemma~\ref{lem:star}, Theorems~\ref{thm:odd} and~\ref{thm:two} (best
+choices for each $r$, computed up to $r=3000$). Previously $5$ for every $r$. For $r\le4$ the value $5$ is exact.}
+\label{tab:bounds}
+\end{table}
+
+\begin{remark}
+Lemma~\ref{lem:sun} uses only that the kernels of a class are pairwise disjoint on each side, so in
+Theorem~\ref{thm:two} the factorizations of $P$ and $Q$ may be chosen independently. For $m=7$ the set $U_7$
+($14$ triples) has no good $2$-colouring, so Theorem~\ref{thm:odd} gives at best $f(10)\ge14$, which is not new.
+\end{remark}
+
+\section{Four colours}\label{sec:r4}
+
+The colouring of Gy\'arf\'as and Raeisi gives $f(4)\ge8$. For the upper bound we show that the triples of a $9$-set
+have no good $4$-colouring.
+
+\emph{Encoding.} Number the $84$ triples of $\{0,\dots,8\}$ in lexicographic order, $t=0,\dots,83$, and let the Boolean
+variable $x_{t,c}$ with index $4t+c+1$ $(0\le c<4)$ mean ``triple $t$ has colour $c$''. The clauses are: for each $t$,
+one clause ``at least one colour'' and six pairwise clauses ``at most one colour''; and for each colour $c$ and each of
+the $10080=120\binom96$ copies $\{t_1,t_2,t_3\}$ of $\C$, the clause $\neg x_{t_1,c}\vee\neg x_{t_2,c}\vee\neg x_{t_3,c}$.
+This is $336$ variables and $40908$ clauses.
+
+\emph{Certificate without symmetry breaking.} Since all colours play the same role, we may relabel the colours so that
+they appear in order of first use along the triples $\{0,1,2\},\{3,4,5\},\{6,7,8\}$: the first has colour $0$, the
+second colour at most $1$, and the third colour at most $1$ plus the largest colour used before. Adding these
+five clauses gives a formula (SHA-256 \texttt{60ff5150\dots}) that CaDiCaL 3.0.1 refutes; its DRAT proof is verified by
+\texttt{drat-trim} (version of 21 April 2024): the solver takes about four minutes, the proof has
+$139\,292\,847$ bytes (SHA-256 \texttt{89108a5c573d9ceed874d44e5a383229}\-\texttt{86987f791d8d65e0e6157866a1d284ac}) and
+its check takes about two and a half minutes. This certificate does not depend on the lex-leader argument below.
+
+\emph{Certificate with lex-leader symmetry breaking.} The group $G$ generated by permutations of the points and of the
+colours acts on assignments by permuting variables and preserves the set of good colourings; if a good colouring
+exists, the lexicographically least one $x^*$ in its $G$-orbit satisfies $x^*\le_{\mathrm{lex}}\sigma(x^*)$ for every
+$\sigma\in G$ \cite{CGLR}. Adding these constraints for the $36$ point transpositions and the $6$ colour transpositions,
+each with the comparator over the positions $p_1<\dots<p_s$ moved by $\sigma$ (in the variable order above) and its own
+fresh auxiliary variables $y_1,\dots,y_{s-1}$ ($y_0$ true), namely $\neg y_{i-1}\vee\neg x_{p_i}\vee x_{\sigma(p_i)}$,
+$\neg y_{i-1}\vee\neg x_{p_i}\vee\neg x_{\sigma(p_i)}\vee y_i$ and $\neg y_{i-1}\vee x_{p_i}\vee x_{\sigma(p_i)}\vee y_i$,
+gives $7350$ variables and $61992$ clauses (SHA-256 \texttt{6a44c615d3677191d08dfcc305a595d2}\-\texttt{59ddc80e00554458bd4087e6};
+here every $\sigma$ moves $s=168$ positions). CaDiCaL 3.0.1 refutes it in about three seconds, and its DRAT proof
+($3\,562\,285$ bytes, SHA-256 \texttt{93abad83ccacf566e4939b3f6966ea08}\-\texttt{b33fd97fdc2f1c261666e6c5c8c29065})
+is verified by \texttt{drat-trim}.
+
+Both formulas are produced identically by two separately written generators (in Python and in C), and the same
+encodings with $8$ points are satisfiable; the colourings returned, and the Gy\'arf\'as--Raeisi colouring, pass two
+separately written checkers. The generators, formulas, witnesses, checkers, cube files and logs are at
+\url{https://github.com/arhancanli/quantavane-loose-triangle-ramsey}.
+
+\section{Five colours}\label{sec:r5}
+
+We show that the triples of an $11$-set have no good $5$-colouring.
+
+\emph{Formula.} The encoding of Section~\ref{sec:r4} with $11$ points and $5$ colours ($165$ triples), with
+lex-leader constraints for the $55$ point transpositions and the $10$ colour transpositions, and with two families of
+clauses that follow from smaller cases. If a colour class has all its triples through one point $v$, the triples
+avoiding $v$ form a $4$-coloured copy of the triples of a $10$-set, which has a monochromatic $\C$ since
+$R_4(\C)=9$; so every class has a triple avoiding each point. More generally, for $1\le j\le4$ and every set $S$ of
+$11-R_{5-j}(\C)$ points and every set $J$ of $j$ colours, some colour of $J$ appears on a triple avoiding $S$, since
+otherwise the triples on the remaining $R_{5-j}(\C)$ points use at most $5-j$ colours ($R_1=6$, $R_2=7$, $R_3=8$,
+$R_4=9$). These clause families are invariant under point and colour permutations, so the lex-leader argument still
+applies. The formula has $23860$ variables and $355775$ clauses (SHA-256 of the clause part
+\texttt{d4ab1fce5ad2f39b0a0198f411926f3b}\-\texttt{ee17f1a53e7b70d9a052e6992bf03204}), and is produced identically by
+both generators.
+
+\emph{Cube and conquer.} The look-ahead solver \texttt{march\_cu} splits the formula into $14\,905$ cubes (cutoff depth
+$14$). The formula together with the negations of all cubes is refuted by CaDiCaL with a DRAT proof verified by
+\texttt{drat-trim}, so every solution would satisfy some cube. Each cube was refuted by CaDiCaL with a time limit of
+$300$ seconds and a DRAT proof checked by \texttt{drat-trim}; the $53$ nodes that reached the limit were split again
+by \texttt{march\_cu}, with a checked DRAT proof that the formula, the node and the negations of its sub-cubes are
+unsatisfiable. In total $18\,129$ leaves were refuted and checked, using about $49$ hours of solver time and $26$ hours
+of proof checking. An independent re-check of the generators, of the clause families, of the cover proof and of $200$
+random leaves and $5$ split covers (re-solved and re-checked) found no error.
+
+\section{Remarks}
+
+The value $R_5(\C)=11$ shows that the lower bound $r+5$ fails already at five colours; the next open case is
+$12\le R_6(\C)\le18$.
+
+\begin{question}
+What is the order of growth of $R_r(\C)-r$? In particular, is $R_r(\C)=(1+o(1))r$?
+\end{question}
+
+\subsection*{Authorship and the role of AI}
+The searches, the encodings, the programs and this draft were produced by AI agents (Claude, by Anthropic) working for
+Quantavane under the author's direction; the author takes responsibility for the results. The claims rest on the explicit
+colourings, the certified proofs and the arguments written here. No mathematician outside Quantavane has reviewed this draft.
+
+\begin{thebibliography}{9}
+\bibitem{AGLM} M. Axenovich, A. Gy\'arf\'as, H. Liu and D. Mubayi, Multicolor Ramsey numbers for triple systems,
+\emph{Discrete Math.} \textbf{322} (2014), 69--77.
+\bibitem{BZ} T. Bohman and E. Zhu, On multicolor Ramsey numbers of triple system paths of length 3,
+arXiv:1907.05236.
+\bibitem{CK} R. Cs\'ak\'any and J. Kahn, A homological approach to two problems on finite sets,
+\emph{J. Algebraic Combin.} \textbf{9} (1999), 141--149.
+\bibitem{CGLR} J. Crawford, M. Ginsberg, E. Luks and A. Roy, Symmetry-breaking predicates for search problems,
+in \emph{Proc. KR'96}, 1996, 148--159.
+\bibitem{FF} P. Frankl and Z. F\"uredi, Exact solution of some Tur\'an-type problems,
+\emph{J. Combin. Theory Ser. A} \textbf{45} (1987), 226--262.
+\bibitem{GR} A. Gy\'arf\'as and G. Raeisi, The Ramsey number of loose triangles and quadrangles in hypergraphs,
+\emph{Electron. J. Combin.} \textbf{19}(2) (2012), \#P30.
+\bibitem{LP} T. \L uczak and J. Polcyn, On the multicolor Ramsey number for 3-paths of length three,
+\emph{Electron. J. Combin.} \textbf{24}(1) (2017), \#P1.27.
+\bibitem{MS} D. Mubayi and A. Suk, A survey of hypergraph Ramsey problems, arXiv:1707.04229.
+\bibitem{DS1} S. P. Radziszowski, Small Ramsey numbers, \emph{Electron. J. Combin.} Dynamic Survey DS1, revision 18
+(2026).
+\end{thebibliography}
+
+\end{document}

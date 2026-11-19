@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use these colourings, formulas or programs, please cite them as below, together with Gyarfas and Raeisi (Electron. J. Combin. 19(2) 2012, #P30)."
+type: dataset
+title: "Multicolour Ramsey numbers of the 3-uniform loose triangle: R_4(C_3;3) = 9 and R_5(C_3;3) = 11"
+abstract: "R_4(C_3;3) = 9 and R_5(C_3;3) = 11 for the 3-uniform loose triangle, R_12(C_3;3) >= 19, and R_r(C_3;3) - r unbounded: explicit colourings checked by two programs, SAT proofs (DRAT and LRAT, cake_lpr) with formulas built identically by two generators, and an 18,129-leaf cube-and-conquer record. Not yet peer reviewed."
+authors:
+  - family-names: Canli
+    given-names: Arhan
+    affiliation: Quantavane
+    email: arhan@quantavane.com
+license: CC-BY-4.0
+url: "https://quantavane.com"
+repository-code: "https://github.com/arhancanli/quantavane-loose-triangle-ramsey"
+keywords:
+  - hypergraph Ramsey numbers
+  - loose cycles
+  - multicolour Ramsey numbers
+  - SAT
+  - DRAT
+  - LRAT

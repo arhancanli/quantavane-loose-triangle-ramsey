@@ -1,0 +1,1 @@
+cubes=14905 covered=14905 missing=0 leaves=18129 splits=53 solve_h=48.78 check_h=25.97 proof_GB=125.25 problems=0

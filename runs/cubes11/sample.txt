@@ -1,0 +1,9 @@
+cube 5305 len=14 UNSAT 2.6s
+cube 2471 len=14 UNSAT 0.3s
+cube 6468 len=14 UNSAT 0.2s
+cube 10664 len=14 UNSAT 8.8s
+cube 791 len=14 UNSAT 1.2s
+cube 1186 len=14 UNSAT 0.2s
+cube 13455 len=14 UNSAT 186.4s
+cube 8779 len=14 UNSAT 0.6s
+N_cubes=14905 sampled=8 timeouts=0 mean=25.0s estimate_total=103.7 CPU-h (estimate)
