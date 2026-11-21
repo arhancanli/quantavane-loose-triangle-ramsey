@@ -84,8 +84,27 @@ The searches, the encoders, the checkers, the runs and these documents were writ
 share no code but were written with the same AI system. No mathematician outside Quantavane has reviewed this
 repository; the colourings and the proofs can be checked by anyone with the programs here or with their own.
 
-## Licence and citation
+## Licence
 
 Colourings, cube files, records, the paper and the text are under CC BY 4.0 (`LICENSE`); the code is under the MIT
-licence (`LICENSE-CODE`). Please cite as: Arhan Canli, *Multicolour Ramsey numbers of the 3-uniform loose triangle*,
+licence (`LICENSE-CODE`).
+
+## How to cite
+
+Please cite as: Arhan Canli, *Multicolour Ramsey numbers of the 3-uniform loose triangle*,
 https://github.com/arhancanli/quantavane-loose-triangle-ramsey (2026), together with Gyárfás and Raeisi.
+
+```bibtex
+@misc{quantavane-loose-triangle-ramsey,
+  author       = {Canli, Arhan},
+  title        = {Multicolour {Ramsey} numbers of the 3-uniform loose triangle: {$R_4(C_3;3) = 9$} and {$R_5(C_3;3) = 11$}},
+  year         = {2026},
+  howpublished = {\url{https://github.com/arhancanli/quantavane-loose-triangle-ramsey}},
+  note         = {Quantavane; CC BY 4.0; code MIT}
+}
+```
+
+[CITATION.cff](CITATION.cff) gives the same reference for GitHub's "Cite this repository" button.
+
+Known uses of this work are listed in [USED_BY.md](USED_BY.md). If you use it, please open an issue or a pull request
+with a link so that yours can be added.
